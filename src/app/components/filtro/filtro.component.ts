@@ -8,14 +8,20 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 
 interface Empresa {
-  empresaId: number;
-  nome: string;
+  EmpresaId: string;
+  Nome: string;
 }
 
 interface Fundo {
-  fundoId: number;
-  nome: string;
+  FundoId: string;
+  Nome: string;
 }
+
+type ObjectResponse<T> = {
+  Value: T;
+};
+
+const baseUrl = 'https:/localhost:44374';
 
 @Component({
   selector: 'app-filtro',
@@ -34,8 +40,8 @@ interface Fundo {
 })
 export class FiltroComponent implements OnInit {
   @Output() filtrar = new EventEmitter<{
-    empresaId?: number;
-    fundoId?: number;
+    EmpresaId?: number;
+    FundoId?: number;
   }>();
 
   form: FormGroup;
@@ -45,8 +51,8 @@ export class FiltroComponent implements OnInit {
 
   constructor(private fb: FormBuilder, private http: HttpClient) {
     this.form = this.fb.group({
-      empresaId: [''],
-      fundoId: [''],
+      EmpresaId: [''],
+      FundoId: [''],
     });
   }
 
@@ -56,17 +62,21 @@ export class FiltroComponent implements OnInit {
   }
 
   carregarEmpresas(): void {
-    this.http.get<Empresa[]>('/api/empresas').subscribe({
-      next: (data) => (this.empresas = data),
-      error: (err) => console.error('Erro ao carregar empresas', err),
-    });
+    this.http
+      .get<ObjectResponse<Empresa[]>>(`${baseUrl}/Empresa/listarEmpresas`)
+      .subscribe({
+        next: (data) => (this.empresas = data.Value),
+        error: (err) => console.error('Erro ao carregar empresas', err),
+      });
   }
 
   carregarFundos(): void {
-    this.http.get<Fundo[]>('/api/fundos').subscribe({
-      next: (data) => (this.fundos = data),
-      error: (err) => console.error('Erro ao carregar fundos', err),
-    });
+    this.http
+      .get<ObjectResponse<Fundo[]>>(`${baseUrl}/FundoFIDC/listarFundos`)
+      .subscribe({
+        next: (data) => (this.fundos = data.Value),
+        error: (err) => console.error('Erro ao carregar fundos', err),
+      });
   }
 
   onFiltrar(): void {

@@ -1,62 +1,54 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { CommonModule } from '@angular/common';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTableModule } from '@angular/material/table';
 
-interface Documento {
-  nomeEmpresa: string;
-  numeroDocumento: string;
-  dataEmissao: string;
-  dataVencimento: string;
+interface Recebivel {
+  RecebivelId: string;
   StatusRecebivel: string;
+  NumeroDocumento: string | null;
+  DataEmissao: string;
+  DataVencimento: string;
+  NomeEmpresa: string;
 }
+
+type ObjectResponse<T> = {
+  Value: T;
+};
+
+const baseUrl = 'https:/localhost:44374';
 
 @Component({
   selector: 'app-tabela',
   standalone: true,
-  imports: [CommonModule, MatTableModule, MatCheckboxModule],
+  imports: [CommonModule, MatTableModule, MatCheckboxModule, HttpClientModule],
   templateUrl: './tabela.component.html',
   styleUrls: ['./tabela.component.scss'],
 })
 export class TabelaComponent {
+  constructor(private http: HttpClient) {}
+
+  ngOnInit(): void {
+    this.carregarRecebiveis();
+  }
+
   displayedColumns: string[] = [
     'select',
-    'nomeEmpresa',
-    'numeroDocumento',
-    'dataEmissao',
-    'dataVencimento',
+    'NomeEmpresa',
+    'NumeroDocumento',
+    'DataEmissao',
+    'DataVencimento',
     'StatusRecebivel',
   ];
 
-  dataSource: Documento[] = [
-    {
-      nomeEmpresa: 'ABC Ltda',
-      numeroDocumento: 'DOC001',
-      dataEmissao: '2025-01-10',
-      dataVencimento: '2025-02-10',
-      StatusRecebivel: 'D',
-    },
-    {
-      nomeEmpresa: 'XPTO S/A',
-      numeroDocumento: 'DOC002',
-      dataEmissao: '2025-01-15',
-      dataVencimento: '2025-02-15',
-      StatusRecebivel: 'D',
-    },
-    {
-      nomeEmpresa: 'TechCorp Ltda',
-      numeroDocumento: 'DOC003',
-      dataEmissao: '2025-02-01',
-      dataVencimento: '2025-03-01',
-      StatusRecebivel: 'D',
-    },
-  ];
+  dataSource: Recebivel[] = [];
 
-  selection = new SelectionModel<Documento>(true, []);
+  selection = new SelectionModel<Recebivel>(true, []);
 
   /** Seleciona ou desmarca uma linha */
-  toggleRow(row: Documento): void {
+  toggleRow(row: Recebivel): void {
     this.selection.toggle(row);
   }
 
@@ -72,5 +64,14 @@ export class TabelaComponent {
     } else {
       this.selection.select(...this.dataSource);
     }
+  }
+
+  carregarRecebiveis(): void {
+    this.http
+      .get<ObjectResponse<Recebivel[]>>(`${baseUrl}/Recebivel/listarRecebiveis`)
+      .subscribe({
+        next: (data) => (this.dataSource = data.Value),
+        error: (err) => console.error('Erro ao carregar recebiveis', err),
+      });
   }
 }

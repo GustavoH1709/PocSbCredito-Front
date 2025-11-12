@@ -9,14 +9,14 @@
       <mat-form-field appearance="outline" class="campo-customizado">
         <mat-label>Empresa</mat-label>
         <mat-select
-          formControlName="empresaId"
+          formControlName="EmpresaId"
           placeholder="Selecione a empresa"
         >
           <mat-option [value]="''">
             <span class="option-all">Todas as empresas</span>
           </mat-option>
-          <mat-option *ngFor="let e of empresas" [value]="e.empresaId">
-            {{ e.nome }}
+          <mat-option *ngFor="let e of empresas" [value]="e.EmpresaId">
+            {{ e.Nome }}
           </mat-option>
         </mat-select>
       </mat-form-field>
@@ -24,12 +24,12 @@
       <!-- Fundo -->
       <mat-form-field appearance="outline" class="campo-customizado">
         <mat-label>Fundo</mat-label>
-        <mat-select formControlName="fundoId" placeholder="Selecione o fundo">
+        <mat-select formControlName="FundoId" placeholder="Selecione o fundo">
           <mat-option [value]="''">
             <span class="option-all">Todos os fundos</span>
           </mat-option>
-          <mat-option *ngFor="let f of fundos" [value]="f.fundoId">
-            {{ f.nome }}
+          <mat-option *ngFor="let f of fundos" [value]="f.FundoId">
+            {{ f.Nome }}
           </mat-option>
         </mat-select>
       </mat-form-field>
