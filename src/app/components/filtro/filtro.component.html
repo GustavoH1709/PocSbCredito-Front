@@ -1,5 +1,6 @@
+<!-- filtro.component.html -->
 <div>
-  <form class="filtro-form" [formGroup]="form" (ngSubmit)="onFiltrar()">
+  <form class="filtro-form" [formGroup]="form">
     <div class="filtro-header">
       <h3 class="filtro-titulo">Filtros de Busca</h3>
     </div>
@@ -44,15 +45,6 @@
         class="btn-limpar"
       >
         Limpar
-      </button>
-
-      <button
-        mat-raised-button
-        color="primary"
-        type="submit"
-        class="btn-buscar"
-      >
-        Buscar
       </button>
     </div>
   </form>

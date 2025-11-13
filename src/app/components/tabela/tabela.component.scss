@@ -71,3 +71,28 @@ tr.selected:hover {
 table {
   animation: fadeIn 0.3s ease-in-out;
 }
+
+.row-clickable {
+  cursor: pointer;
+
+  &:hover {
+    background-color: #f5f5f5;
+  }
+}
+
+.row-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+
+  &:hover {
+    background-color: transparent;
+  }
+}
+
+.row-yellow {
+  background-color: #fff9c4 !important; // Amarelo claro
+
+  &:hover {
+    background-color: #fff59d !important; // Amarelo um pouco mais escuro no hover
+  }
+}

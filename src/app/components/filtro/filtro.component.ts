@@ -1,25 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
-
-interface Empresa {
-  EmpresaId: string;
-  Nome: string;
-}
-
-interface Fundo {
-  FundoId: string;
-  Nome: string;
-}
-
-type ObjectResponse<T> = {
-  Value: T;
-};
+import { Empresa, Fundo, ObjectResponse } from '../../types/api';
 
 const baseUrl = 'https:/localhost:44374';
 
@@ -44,6 +31,8 @@ export class FiltroComponent implements OnInit {
     FundoId?: number;
   }>();
 
+  @Input() titulo: string = '';
+
   form: FormGroup;
 
   empresas: Empresa[] = [];
@@ -59,6 +48,11 @@ export class FiltroComponent implements OnInit {
   ngOnInit(): void {
     this.carregarEmpresas();
     this.carregarFundos();
+
+    // Emite automaticamente quando os valores mudarem
+    this.form.valueChanges.subscribe(() => {
+      this.onFiltrar();
+    });
   }
 
   carregarEmpresas(): void {
