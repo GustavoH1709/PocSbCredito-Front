@@ -4,9 +4,8 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTableModule } from '@angular/material/table';
+import { AppConfigService } from '../../core/services/app-config.service';
 import { ObjectResponse, Recebivel } from '../../types/api';
-
-const baseUrl = 'https:/localhost:44374';
 
 @Component({
   selector: 'app-tabela',
@@ -16,7 +15,9 @@ const baseUrl = 'https:/localhost:44374';
   styleUrls: ['./tabela.component.scss'],
 })
 export class TabelaComponent {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private config: AppConfigService) {
+    this.baseUrl = this.config.get('baseUrl');
+  }
 
   ngOnInit(): void {
     this.carregarRecebiveis();
@@ -32,7 +33,7 @@ export class TabelaComponent {
   ];
 
   dataSource: Recebivel[] = [];
-
+  baseUrl: string = '';
   selection = new SelectionModel<Recebivel>(true, []);
 
   /** Traduz o status do recebível */
@@ -108,7 +109,7 @@ export class TabelaComponent {
 
     this.http
       .get<ObjectResponse<Recebivel[]>>(
-        `${baseUrl}/Recebivel/listarRecebiveis`,
+        `${this.baseUrl}/Recebivel/listarRecebiveis`,
         { params }
       )
       .subscribe({

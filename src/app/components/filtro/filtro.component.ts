@@ -6,9 +6,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
+import { AppConfigService } from '../../core/services/app-config.service';
 import { Empresa, Fundo, ObjectResponse } from '../../types/api';
-
-const baseUrl = 'https:/localhost:44374';
 
 @Component({
   selector: 'app-filtro',
@@ -37,12 +36,19 @@ export class FiltroComponent implements OnInit {
 
   empresas: Empresa[] = [];
   fundos: Fundo[] = [];
+  baseUrl: string = '';
 
-  constructor(private fb: FormBuilder, private http: HttpClient) {
+  constructor(
+    private fb: FormBuilder,
+    private http: HttpClient,
+    private config: AppConfigService
+  ) {
     this.form = this.fb.group({
       EmpresaId: [''],
       FundoId: [''],
     });
+
+    this.baseUrl = this.config.get('baseUrl');
   }
 
   ngOnInit(): void {
@@ -57,7 +63,7 @@ export class FiltroComponent implements OnInit {
 
   carregarEmpresas(): void {
     this.http
-      .get<ObjectResponse<Empresa[]>>(`${baseUrl}/Empresa/listarEmpresas`)
+      .get<ObjectResponse<Empresa[]>>(`${this.baseUrl}/Empresa/listarEmpresas`)
       .subscribe({
         next: (data) => (this.empresas = data.Value),
         error: (err) => console.error('Erro ao carregar empresas', err),
@@ -66,7 +72,7 @@ export class FiltroComponent implements OnInit {
 
   carregarFundos(): void {
     this.http
-      .get<ObjectResponse<Fundo[]>>(`${baseUrl}/FundoFIDC/listarFundos`)
+      .get<ObjectResponse<Fundo[]>>(`${this.baseUrl}/FundoFIDC/listarFundos`)
       .subscribe({
         next: (data) => (this.fundos = data.Value),
         error: (err) => console.error('Erro ao carregar fundos', err),

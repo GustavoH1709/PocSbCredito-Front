@@ -15,9 +15,8 @@ import {
 } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { AppConfigService } from '../../core/services/app-config.service';
 import { Recebivel } from '../../types/api';
-
-const baseUrl = 'https:/localhost:44374';
 
 interface ModalData {
   linhasSelecionadas?: Recebivel[];
@@ -47,11 +46,13 @@ export class ModalTaxaComponent {
   empresaId?: number;
   fundoId?: number;
   salvando: boolean = false;
+  baseUrl: string = '';
 
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<ModalTaxaComponent>,
     private http: HttpClient,
+    private config: AppConfigService,
     @Inject(MAT_DIALOG_DATA) public data: ModalData
   ) {
     this.form = this.fb.group({
@@ -64,6 +65,7 @@ export class ModalTaxaComponent {
     this.linhasSelecionadas = data?.linhasSelecionadas ?? [];
     this.empresaId = data?.EmpresaId;
     this.fundoId = data?.FundoId;
+    this.baseUrl = this.config.get('baseUrl');
   }
 
   salvar() {
@@ -106,7 +108,7 @@ export class ModalTaxaComponent {
     console.log('Enviando para o backend:', payload);
 
     this.http
-      .post(`${baseUrl}/OperacaoAntecipacao/antecipar`, payload)
+      .post(`${this.baseUrl}/OperacaoAntecipacao/antecipar`, payload)
       .subscribe({
         next: (response) => {
           console.log('Sucesso:', response);
